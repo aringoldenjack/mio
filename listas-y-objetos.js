@@ -35,7 +35,7 @@ var listaPersonasEjemplo = [
  * - el mismo listado, ordenado alfabéticamente por el apellido de la persona 
  */
 function ordenarPorApellido(listaDePersonas) {
-    let copialista=listaDePersonas;
+    let copialista=structuredClone(listaDePersonas);
     //collator nos crea un objeto para ordenar segun NUESTRO abecedario, nos deja tambien establecer mas cualidades al ordenar. INTL contiene herramientas para internacionalizar
     //nuestro codigo
     const collator = new Intl.Collator('es', {ignorePunctuation: true });
@@ -75,7 +75,7 @@ console.log("soloNombres()", soloNombres(listaPersonasEjemplo));
 function promedioEdades(listaDePersonas) {
         let promedio = 0;
     for (let i = 0; i < listaDePersonas.length; i++) {
-        promedio=+listaDePersonas[i].edad;
+        promedio=promedio+listaDePersonas[i].edad;
     }
     promedio=promedio/listaDePersonas.length;
     return promedio;
@@ -93,7 +93,7 @@ console.log("promedioEdades()", promedioEdades(listaPersonasEjemplo));
  * - una nueva lista, donde la edad de cada persona se incrementa en 1.
  */
 function cumplirAños(listaDePersonas) {
-    let copialista=listaDePersonas;
+    let copialista=structuredClone(listaDePersonas);
     for (let index = 0; index < copialista.length; index++) {
         copialista[index].edad = copialista[index].edad + 1;
     }
@@ -112,12 +112,13 @@ console.log("cumplirAños()", cumplirAños(listaPersonasEjemplo));
  * - una lista, array, conteniendo solamente las personas con más de 18 años
  */
 function soloMayoresDeEdad(listaDePersonas) {
+    let personasConEdad = [];
     for (let index = 0; index < listaDePersonas.length; index++) {
-        if(listaDePersonas[index].edad < 18){
-            listaDePersonas.splice(index);
+        if(listaDePersonas[index].edad > 18){
+            personasConEdad.push(listaDePersonas[index]);
         }
     }
-    return listaDePersonas;
+    return personasConEdad;
 }
 console.log("soloMayoresDeEdad()", soloMayoresDeEdad(listaPersonasEjemplo));
 
@@ -131,17 +132,18 @@ console.log("soloMayoresDeEdad()", soloMayoresDeEdad(listaPersonasEjemplo));
  * - una objeto con la persona de mayor edad en todo el listado. En caso de que hayan 2 personas con la misma edad, se puede retornar la primera que aparezca en el listado.
  */
 function laPersonaMayor(listaDePersonas) {
-    let copialista=listaDePersonas;
-    let mayor=0;
-    for (let index = 0; index < copialista.length; index++) {
-        if(copialista[index].edad>mayor){
-            mayor = copialista[index].edad;
+    let personaMayor = listaDePersonas[0];
+
+    for (let i = 1; i < listaDePersonas.length; i++) {
+        if (listaDePersonas[i].edad > personaMayor.edad) {
+            personaMayor = listaDePersonas[i];
         }
     }
-    return copialista[edad].mayor;
-}
-console.log("laPersonaMayor()", laPersonaMayor(listaPersonasEjemplo));
 
+    return personaMayor;
+}
+
+console.log("laPersonaMayor()",laPersonaMayor(listaPersonasEjemplo));
 /**
  * 07 - agregarHeladoFavorito
  * 
@@ -153,10 +155,19 @@ console.log("laPersonaMayor()", laPersonaMayor(listaPersonasEjemplo));
  * - una nueva lista, donde a cada persona se le agrega un campo `heladoFavorito` tomado de la lista de listaDeHelados. Si no hay más helados disponibles, se asigna "vainilla" por defecto.
  */
 function agregarHeladoFavorito(listaDePersonas, listaDeHelados) {
+    let personasConHelado = structuredClone(listaDePersonas);
+
     for (let index = 0; index < listaDePersonas.length; index++) {
-        const element = listaDePersonas[index].heladoFavorito;
-        
+
+        if (index >= listaDeHelados.length) {
+            personasConHelado[index].heladoFavorito = "vainilla";
+        } else {
+            personasConHelado[index].heladoFavorito = listaDeHelados[index];
+        }
+
     }
-    return listaDePersonas;
+
+    return personasConHelado;
 }
-console.log("agregarHeladoFavorito()", agregarHeladoFavorito(listaPersonasEjemplo, ["chocolate", "limon", "frutilla"]));
+
+console.log("agregarHeladoFavorito()",agregarHeladoFavorito(listaPersonasEjemplo,["chocolate", "limon", "frutilla"]));
