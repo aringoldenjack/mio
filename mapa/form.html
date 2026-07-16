@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        /* Style the popup container */
+dialog {
+  border: none;
+  border-radius: 8px;
+  padding: 24px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Style the dim background overlay behind the popup */
+dialog::backdrop {
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(3px); /* Adds a modern blurry look */
+}
+
+/* Simple form field layout */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 15px;
+}
+
+input {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.form-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+    </style>
+</head>
+<body>
+    <!-- Trigger Button -->
+<button id="openFormBtn">Open Contact Form</button>
+
+<!-- Popup Dialog Container -->
+<dialog id="formPopup">
+  <div class="popup-content">
+    <h2>Contact Us</h2>
+    
+    <form method="dialog"> <!-- method="dialog" automatically closes it on submit -->
+      <label for="name">Name:</label>
+      <input type="text" id="name" required>
+
+      <label for="email">Email:</label>
+      <input type="email" id="email" required>
+
+      <div class="form-buttons">
+        <button type="submit">Submit</button>
+        <button type="button" id="closeFormBtn">Cancel</button>
+      </div>
+    </form>
+    
+  </div>
+</dialog>
+
+<script>
+
+    // Get DOM element references
+const formPopup = document.getElementById('formPopup');
+const openFormBtn = document.getElementById('openFormBtn');
+const closeFormBtn = document.getElementById('closeFormBtn');
+
+// Open the popup when clicking the trigger button
+openFormBtn.addEventListener('click', () => {
+  formPopup.showModal(); // Opens the dialog as a modal window
+});
+
+// Close the popup when clicking the cancel button
+closeFormBtn.addEventListener('click', () => {
+  formPopup.close(); // Closes the dialog box
+});
+
+// Optional: Close the popup when clicking outside the form area
+formPopup.addEventListener('click', (event) => {
+  if (event.target === formPopup) {
+    formPopup.close();
+  }
+});
+
+
+</script>
+</body>
+</html>
