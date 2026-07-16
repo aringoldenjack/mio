@@ -1,0 +1,111 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<base target="_top">
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	
+	<title>Mapa Nestle</title>
+	
+	<link rel="shortcut icon" type="image/x-icon" href="C:\Users\User\Desktop\arin\map\favicon.ico" />
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <link rel="stylesheet" href="style.css">
+
+	
+</head>
+<body>
+
+
+<div id="map"><script>
+
+const map = L.map('map').setView([-34.627558, -58.390274], 13);
+
+const tiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+}).addTo(map);
+
+function addItem(e) {
+    const desc = document.getElementById('descripcion');
+    const titulo = document.getElementById('titulo');
+    const photoInput = document.getElementById('imagenfuente');
+    const list = document.getElementById('dynamicList');
+
+    if (titulo.value.trim() !== "") {
+
+        // Create marker first
+        const marker = L.marker(e.latlng).addTo(map);
+
+        // If an image was selected
+        if (photoInput.files && photoInput.files[0]) {
+
+            const reader = new FileReader();
+
+            reader.onload = function(event) {
+
+                const imageUrl = event.target.result;
+
+                // Popup HTML
+                const popupContent = `
+                    <div>
+                        <h3>" ${titulo.value} "</h3>
+                        <img src="${imageUrl}" width="200">
+                        <br>
+                        <p>${desc.value}</p>
+                        <br>
+                        <small>${e.latlng.lat}, ${e.latlng.lng}</small>
+                    </div>
+                `;
+
+                marker.bindPopup(popupContent);
+                titulo.value = "";
+                desc.value = "";
+            };
+
+            reader.readAsDataURL(photoInput.files[0]);
+
+        } else {
+
+            // No image selected
+            marker.bindPopup(titulo.value);
+        }
+
+        // Add item to list
+        const newItem = document.createElement('li');
+
+        newItem.textContent =
+            titulo.value + " coords: " + e.latlng.toString().slice(6);
+
+        list.appendChild(newItem);
+
+        // Clear titulo
+       
+        photoInput.value = "";
+    }
+}
+
+function onMapClick(e) {
+    const form = document.getElementById('form');
+    form.showModal(e);
+
+}
+
+map.on('click', onMapClick);
+
+</script>
+</div>
+
+<dialog id="form">
+    <form>
+        <button id="cancelarform"> X </button><br>
+        <input type="text" name="texto"   id="titulo"      placeholder="Titulo"> <br>
+        <input type="text" name="texto"   id="descripcion" placeholder="Descripcion "> <br>
+        <input type="file" accept="image/*" id="imagenfuente"> <br>
+        <input type="submit" onclick="addItem(e)" value="agregar punto">
+        <ul id="dynamicList"></ul>
+    </form>
+</dialog>
+</body>
+</html>
